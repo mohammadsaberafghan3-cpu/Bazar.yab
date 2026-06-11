@@ -2,9 +2,9 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>سیستم هوشمند انبار و بازار (AI)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&family=Tahoma&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>سیستم هوشمند انبار و بازار | مدیریت حرفه‌ای</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment-jalaali@0.9.6/build/moment-jalaali.js"></script>
@@ -19,8 +19,8 @@
             --secondary: #2ecc71;
             --danger: #e74c3c;
             --warning: #f39c12;
-            --glass: rgba(255, 255, 255, 0.15);
-            --glass-hover: rgba(255, 255, 255, 0.25);
+            --glass: rgba(0,0,0,0.3);
+            --glass-hover: rgba(0,0,0,0.45);
         }
         body {
             font-family: 'Vazirmatn', sans-serif;
@@ -31,19 +31,18 @@
         }
         body.font-tahoma { font-family: 'Tahoma', sans-serif; }
         body.font-arial { font-family: 'Arial', sans-serif; }
-        body.font-vazir { font-family: 'Vazirmatn', sans-serif; }
         .hidden { display: none !important; }
         .container { max-width: 1200px; margin: 0 auto; padding: 16px; }
         .glass-card {
-            background: rgba(0,0,0,0.3);
+            background: var(--glass);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255,255,255,0.3);
             border-radius: 24px;
             padding: 20px;
             margin-bottom: 20px;
-            transition: 0.3s;
+            transition: 0.2s;
         }
-        .glass-card:hover { background: rgba(0,0,0,0.4); transform: translateY(-4px); }
+        .glass-card:hover { background: var(--glass-hover); transform: translateY(-2px); }
         .btn {
             padding: 10px 18px;
             border: none;
@@ -76,7 +75,12 @@
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 12px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.1); }
         th { color: #ffd89a; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
         .stat-card {
             background: rgba(0,0,0,0.3);
             border-radius: 28px;
@@ -95,11 +99,13 @@
             top: 0;
             z-index: 50;
         }
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: white; }
         .menu-icon { font-size: 26px; cursor: pointer; padding: 8px; border-radius: 50%; }
         .menu-icon:hover { background: rgba(255,255,255,0.2); }
         .sidebar {
             position: fixed;
-            right: -300px;
+            right: -280px;
             top: 0;
             width: 280px;
             height: 100%;
@@ -129,7 +135,7 @@
         .overlay.show { display: block; }
         .page { display: none; animation: fadeIn 0.3s; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .marquee {
             background: rgba(0,0,0,0.5);
             padding: 8px;
@@ -199,36 +205,22 @@
             border-radius: 40px;
             cursor: pointer;
         }
-        .ai-suggestion {
-            font-size: 12px;
-            color: #ffd966;
-            margin-top: 4px;
-        }
-        @media (max-width: 768px) {
-            .container { padding: 12px; }
-            th, td { padding: 8px; font-size: 12px; }
-        }
+        .ai-suggestion { font-size: 12px; color: #ffd966; margin-top: 4px; }
+        @media (max-width: 768px) { th, td { padding: 8px; font-size: 12px; } }
     </style>
 </head>
 <body>
-
 <!-- لاگین -->
 <div id="loginPage" class="login-container">
     <div class="login-card">
         <div style="text-align: center; margin-bottom: 24px;">
             <i class="fas fa-robot" style="font-size: 56px; color: #ff9f4a;"></i>
-            <h2>انبار هوشمند</h2>
-            <p>با قدرت هوش مصنوعی</p>
+            <h2>انبار هوشمند AI</h2>
+            <p>مدیریت حرفه‌ای</p>
         </div>
         <form id="loginForm">
-            <div class="form-group">
-                <label>نام کاربری</label>
-                <input type="text" id="loginUsername" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label>رمز عبور</label>
-                <input type="password" id="loginPassword" autocomplete="off">
-            </div>
+            <div class="form-group"><label>نام کاربری</label><input type="text" id="loginUsername" autocomplete="off"></div>
+            <div class="form-group"><label>رمز عبور</label><input type="password" id="loginPassword" autocomplete="off"></div>
             <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">ورود</button>
             <div id="loginError" class="hidden" style="color:#ffaaaa; margin-top:12px; text-align:center;">نام کاربری یا رمز اشتباه است</div>
         </form>
@@ -239,14 +231,8 @@
 <div id="appContainer" class="hidden">
     <div class="marquee" id="marqueeText">خوش آمدید</div>
     <div class="header">
-        <div class="logo-area" style="display:flex; align-items:center; gap:8px;">
-            <img id="logoImg" style="width:40px;height:40px;border-radius:50%; display:none;">
-            <span>انبار هوشمند AI</span>
-        </div>
-        <div style="display: flex; gap: 12px;">
-            <span id="userNameDisplay"></span>
-            <i class="fas fa-bars menu-icon" id="menuToggle"></i>
-        </div>
+        <div class="logo-area"><img id="logoImg" class="logo-img" style="display:none;"><span>انبار هوشمند AI</span></div>
+        <div style="display: flex; gap: 12px;"><span id="userNameDisplay"></span><i class="fas fa-bars menu-icon" id="menuToggle"></i></div>
     </div>
     <div class="sidebar" id="sidebar">
         <a href="#" data-page="dashboard">📊 داشبورد</a>
@@ -260,83 +246,61 @@
         <a href="#" id="logoutBtn">🚪 خروج</a>
     </div>
     <div class="overlay" id="overlay"></div>
-
     <div class="container">
         <div id="dashboardPage" class="page active">
             <div class="glass-card"><div class="stats-grid" id="statsGrid"></div></div>
             <div class="glass-card">
-                <h3><i class="fas fa-brain"></i> دستیار هوشمند انبار (AI)</h3>
-                <div class="form-group"><textarea id="aiQuestion" rows="2" placeholder="سوال خود را بپرسید... مثلاً: بهترین روش برای کاهش موجودی راکد چیست؟"></textarea></div>
+                <h3><i class="fas fa-brain"></i> دستیار هوشمند (AI)</h3>
+                <div class="form-group"><textarea id="aiQuestion" rows="2" placeholder="سوال خود را بپرسید..."></textarea></div>
                 <button class="btn btn-primary" id="askAiBtn">🤖 بپرس</button>
-                <div id="aiAnswer" class="glass-card" style="margin-top:12px; background:rgba(0,0,0,0.5);"></div>
+                <div id="aiAnswer" class="glass-card" style="margin-top:12px;"></div>
             </div>
         </div>
         <div id="productsPage" class="page">
             <div class="glass-card">
-                <div class="btn-group" style="margin-bottom:16px;">
-                    <button class="btn btn-primary" id="addProductBtn">➕ افزودن محصول</button>
-                    <button class="btn btn-secondary" id="scanBarcodeBtn">📷 اسکن بارکد</button>
-                </div>
+                <div class="btn-group"><button class="btn btn-primary" id="addProductBtn">➕ افزودن محصول</button><button class="btn btn-secondary" id="scanBarcodeBtn">📷 اسکن بارکد</button></div>
                 <input type="text" id="searchProduct" placeholder="جستجو...">
                 <div id="productsList"></div>
             </div>
         </div>
-        <div id="categoriesPage" class="page">
-            <div class="glass-card"><button class="btn btn-primary" id="addCategoryBtn">➕ افزودن دسته</button><div id="categoriesList"></div></div>
-        </div>
-        <div id="inventoryPage" class="page">
-            <div class="glass-card" id="inventoryList"></div>
-        </div>
-        <div id="shopsPage" class="page">
-            <div class="glass-card"><button class="btn btn-primary" id="addShopBtn">➕ افزودن فروشگاه</button><div id="shopsList"></div></div>
-        </div>
-        <div id="messagesPage" class="page">
-            <div class="glass-card" id="messagesContainer"></div>
-        </div>
+        <div id="categoriesPage" class="page"><div class="glass-card"><button class="btn btn-primary" id="addCategoryBtn">➕ افزودن دسته</button><div id="categoriesList"></div></div></div>
+        <div id="inventoryPage" class="page"><div class="glass-card" id="inventoryList"></div></div>
+        <div id="shopsPage" class="page"><div class="glass-card"><button class="btn btn-primary" id="addShopBtn">➕ افزودن فروشگاه</button><div id="shopsList"></div></div></div>
+        <div id="messagesPage" class="page"><div class="glass-card" id="messagesContainer"></div></div>
         <div id="reportsPage" class="page">
-            <div class="glass-card">
-                <div class="btn-group">
-                    <button class="btn btn-primary" id="exportJsonBtn">📤 خروجی JSON</button>
-                    <button class="btn btn-secondary" id="importJsonBtn">📥 ورودی JSON</button>
-                    <button class="btn btn-primary" id="pdfReportBtn">📄 گزارش PDF</button>
-                    <button class="btn btn-primary" id="excelReportBtn">📊 خروجی اکسل</button>
-                    <button class="btn btn-secondary" id="printReportBtn">🖨️ پرینت</button>
-                    <button class="btn btn-danger" id="resetAllBtn">🗑️ بازنشانی همه</button>
-                </div>
-            </div>
+            <div class="glass-card"><div class="btn-group">
+                <button class="btn btn-primary" id="exportJsonBtn">📤 خروجی JSON</button>
+                <button class="btn btn-secondary" id="importJsonBtn">📥 ورودی JSON</button>
+                <button class="btn btn-primary" id="pdfReportBtn">📄 گزارش PDF</button>
+                <button class="btn btn-primary" id="excelReportBtn">📊 خروجی اکسل</button>
+                <button class="btn btn-secondary" id="printReportBtn">🖨️ پرینت</button>
+                <button class="btn btn-danger" id="resetAllBtn">🗑️ بازنشانی همه</button>
+            </div></div>
         </div>
         <div id="settingsPage" class="page">
             <div class="glass-card">
-                <h3>🤖 تنظیمات هوش مصنوعی</h3>
-                <div class="form-group"><label>کلید API Google Gemini</label><input type="text" id="geminiApiKey" placeholder="AIza..."></div>
-                <button class="btn btn-primary" id="saveApiKeyBtn">ذخیره کلید</button>
+                <h3>🤖 هوش مصنوعی</h3>
+                <div class="form-group"><label>کلید API (Gilas / OpenAI)</label><input type="text" id="aiApiKey" placeholder="sk-... یا کلید گیلاس"></div>
+                <div class="form-group"><label>آدرس API (اختیاری)</label><input type="text" id="aiApiUrl" placeholder="https://api.openai.com/v1/chat/completions"></div>
+                <button class="btn btn-primary" id="saveAiSettingsBtn">ذخیره تنظیمات AI</button>
                 <hr>
-                <h3>🌐 زبان</h3>
-                <select id="langSelect"><option value="fa">فارسی</option><option value="en">English</option></select>
-                <h3>✍️ فونت</h3>
-                <select id="fontSelect"><option value="vazir">وزیرمتن</option><option value="tahoma">Tahoma</option><option value="arial">Arial</option></select>
-                <h3>🖼️ لوگو</h3>
-                <input type="file" id="logoUpload" accept="image/*"><button class="btn btn-secondary" id="saveLogoBtn">ذخیره لوگو</button>
-                <h3>📢 پیام‌های متحرک</h3>
-                <div id="marqueeMessagesList"></div>
-                <input type="text" id="newMarqueeMsg" placeholder="پیام جدید"><button class="btn btn-secondary" id="addMarqueeMsgBtn">افزودن</button>
-                <h3>🔐 تغییر رمز مدیر</h3>
-                <input type="password" id="newAdminPass" placeholder="رمز جدید"><button class="btn btn-primary" id="changePassBtn">تغییر</button>
-                <h3>👥 کاربران</h3>
-                <div id="usersList"></div>
-                <button class="btn btn-secondary" id="addUserBtn">➕ افزودن کاربر</button>
-                <hr>
-                <button class="btn btn-danger" id="fullResetBtn">⚠️ بازنشانی کامل سیستم</button>
+                <h3>🌐 زبان</h3><select id="langSelect"><option value="fa">فارسی</option><option value="en">English</option></select>
+                <h3>✍️ فونت</h3><select id="fontSelect"><option value="vazir">وزیرمتن</option><option value="tahoma">Tahoma</option><option value="arial">Arial</option></select>
+                <h3>🖼️ لوگو</h3><input type="file" id="logoUpload" accept="image/*"><button class="btn btn-secondary" id="saveLogoBtn">ذخیره لوگو</button>
+                <h3>📢 پیام متحرک</h3><div id="marqueeMessagesList"></div><input type="text" id="newMarqueeMsg" placeholder="پیام جدید"><button class="btn btn-secondary" id="addMarqueeMsgBtn">افزودن</button>
+                <h3>🔐 تغییر رمز مدیر</h3><input type="password" id="newAdminPass" placeholder="رمز جدید"><button class="btn btn-primary" id="changePassBtn">تغییر</button>
+                <h3>👥 کاربران</h3><div id="usersList"></div><button class="btn btn-secondary" id="addUserBtn">➕ افزودن کاربر</button>
+                <hr><button class="btn btn-danger" id="fullResetBtn">⚠️ بازنشانی کامل سیستم</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- مودال‌ها -->
-<div id="productModal" class="modal"><div class="modal-content"><h3 id="productModalTitle">محصول جدید</h3><form id="productForm"><div class="form-group"><label>نام محصول</label><input id="prodName" required><button type="button" class="btn btn-secondary btn-sm" id="aiSuggestPriceBtn" style="margin-top:4px;">🤖 پیشنهاد قیمت</button><div id="aiPriceSuggestion" class="ai-suggestion"></div></div><div class="form-group"><label>واحد</label><input id="prodUnit" required></div><div class="form-group"><label>قیمت (تومان)</label><input id="prodPrice" type="number" required></div><div class="form-group"><label>تصویر</label><input type="file" id="prodImage" accept="image/*"></div><div class="btn-group"><button type="submit" class="btn btn-primary">ذخیره</button><button type="button" class="btn btn-secondary" onclick="closeModal('productModal')">انصراف</button></div></form></div></div>
-<div id="categoryModal" class="modal"><div class="modal-content"><h3>دسته جدید</h3><form id="categoryForm"><input id="catName" placeholder="نام دسته" required><button type="submit" class="btn btn-primary mt-20">ذخیره</button><button type="button" class="btn btn-secondary" onclick="closeModal('categoryModal')">انصراف</button></form></div></div>
-<div id="shopModal" class="modal"><div class="modal-content"><h3>فروشگاه جدید</h3><form id="shopForm"><input id="shopName" placeholder="نام فروشگاه" required><textarea id="shopAddress" placeholder="آدرس"></textarea><input id="shopInsta" placeholder="اینستاگرام"><input id="shopWhatsapp" placeholder="واتساپ"><input id="shopTelegram" placeholder="تلگرام"><button type="submit" class="btn btn-primary">ذخیره</button><button type="button" class="btn btn-secondary" onclick="closeModal('shopModal')">انصراف</button></form></div></div>
-<div id="barcodeScanner" class="barcode-scanner"><div class="scanner-close" id="closeScanner">✖ بستن</div><div id="scannerView" style="width:100%; max-width:500px;"></div><p style="color:white; margin-top:16px;">بارکد را اسکن کنید</p></div>
+<div id="productModal" class="modal"><div class="modal-content"><h3 id="productModalTitle">محصول جدید</h3><form id="productForm"><div class="form-group"><label>نام محصول</label><input id="prodName" required><button type="button" class="btn btn-secondary btn-sm" id="aiSuggestPriceBtn">🤖 پیشنهاد قیمت</button><div id="aiPriceSuggestion" class="ai-suggestion"></div></div><div class="form-group"><label>واحد</label><input id="prodUnit" required></div><div class="form-group"><label>قیمت (تومان)</label><input id="prodPrice" type="number" required></div><div class="form-group"><label>تصویر</label><input type="file" id="prodImage" accept="image/*"></div><div class="btn-group"><button type="submit" class="btn btn-primary">ذخیره</button><button type="button" class="btn btn-secondary" onclick="closeModal('productModal')">انصراف</button></div></form></div></div>
+<div id="categoryModal" class="modal"><div class="modal-content"><h3>دسته جدید</h3><form id="categoryForm"><input id="catName" placeholder="نام دسته" required><div class="btn-group"><button type="submit" class="btn btn-primary">ذخیره</button><button type="button" class="btn btn-secondary" onclick="closeModal('categoryModal')">انصراف</button></div></form></div></div>
+<div id="shopModal" class="modal"><div class="modal-content"><h3>فروشگاه جدید</h3><form id="shopForm"><input id="shopName" placeholder="نام فروشگاه" required><textarea id="shopAddress" placeholder="آدرس"></textarea><input id="shopInsta" placeholder="اینستاگرام"><input id="shopWhatsapp" placeholder="واتساپ"><input id="shopTelegram" placeholder="تلگرام"><div class="btn-group"><button type="submit" class="btn btn-primary">ذخیره</button><button type="button" class="btn btn-secondary" onclick="closeModal('shopModal')">انصراف</button></div></form></div></div>
+<div id="barcodeScanner" class="barcode-scanner"><div class="scanner-close" id="closeScanner">✖ بستن</div><div id="scannerView" style="width:100%; max-width:500px;"></div><p style="color:white; margin-top:16px;">بارکد را مقابل دوربین قرار دهید</p></div>
 
 <script>
     // ========== داده‌های اصلی ==========
@@ -353,27 +317,23 @@
         ],
         settings: {
             adminPassword: "admin123",
-            marqueeMessages: ["📢 خوش آمدید", "🤖 هوش مصنوعی فعال است"],
+            marqueeMessages: ["📢 خوش آمدید", "🤖 هوش مصنوعی آماده است"],
             logo: "",
             language: "fa",
             font: "vazir",
-            geminiApiKey: ""
+            aiApiKey: "",
+            aiApiUrl: "https://api.openai.com/v1/chat/completions"
         }
     };
     let currentEditing = { type: null, id: null };
 
     function loadData() {
-        const saved = localStorage.getItem("smartInventoryAI");
-        if (saved) {
-            try {
-                const data = JSON.parse(saved);
-                Object.assign(appData, data);
-            } catch(e) {}
-        }
+        const saved = localStorage.getItem("smartInventoryAI_full");
+        if (saved) { try { Object.assign(appData, JSON.parse(saved)); } catch(e) {} }
         if (!appData.products.length) {
             appData.products = [
-                { id: 1, name: "کنسرو لوبیا", unit: "قوطی", price: 28000, image: "", barcode: "" },
-                { id: 2, name: "برنج طارم", unit: "کیلو", price: 85000, image: "", barcode: "" }
+                { id: 1, name: "کنسرو لوبیا", unit: "قوطی", price: 28000, image: "" },
+                { id: 2, name: "برنج طارم", unit: "کیلو", price: 85000, image: "" }
             ];
             if (!appData.inventory.find(i=>i.productId===1)) appData.inventory.push({ productId:1, shopId:1, quantity:120 });
             if (!appData.inventory.find(i=>i.productId===2)) appData.inventory.push({ productId:2, shopId:1, quantity:55 });
@@ -382,61 +342,48 @@
         applySettings();
         saveData();
     }
-    function saveData() { localStorage.setItem("smartInventoryAI", JSON.stringify(appData)); }
+    function saveData() { localStorage.setItem("smartInventoryAI_full", JSON.stringify(appData)); }
     function applySettings() {
         document.body.className = `font-${appData.settings.font}`;
-        if (appData.settings.logo) {
-            document.getElementById("logoImg").src = appData.settings.logo;
-            document.getElementById("logoImg").style.display = "inline-block";
-        }
+        if (appData.settings.logo) { document.getElementById("logoImg").src = appData.settings.logo; document.getElementById("logoImg").style.display = "inline-block"; }
         updateMarquee();
-        document.getElementById("geminiApiKey").value = appData.settings.geminiApiKey || "";
+        document.getElementById("aiApiKey").value = appData.settings.aiApiKey || "";
+        document.getElementById("aiApiUrl").value = appData.settings.aiApiUrl || "";
     }
     function updateMarquee() { document.getElementById("marqueeText").innerText = appData.settings.marqueeMessages.join("  |  "); }
 
-    // ========== هوش مصنوعی (Gemini) ==========
-    async function callGemini(promptText) {
-        const apiKey = appData.settings.geminiApiKey;
-        if (!apiKey) { throw new Error("کلید API تنظیم نشده است"); }
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-        const response = await fetch(url, {
+    // ========== هوش مصنوعی ==========
+    async function callAI(promptText) {
+        const apiKey = appData.settings.aiApiKey;
+        const apiUrl = appData.settings.aiApiUrl;
+        if (!apiKey) throw new Error("کلید API در تنظیمات وارد نشده است");
+        const response = await fetch(apiUrl, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: promptText }] }]
+                model: "gpt-4o-mini",
+                messages: [{ role: "user", content: promptText }],
+                temperature: 0.7
             })
         });
         const data = await response.json();
         if (data.error) throw new Error(data.error.message);
-        return data.candidates[0].content.parts[0].text;
+        return data.choices[0].message.content;
     }
-
     async function suggestPrice(productName) {
         try {
-            const result = await callGemini(`به عنوان یک کارشناس قیمت‌گذاری کالا در ایران، برای محصول "${productName}" یک قیمت تقریبی به تومان پیشنهاد بده. فقط عدد را بنویس.`);
+            const result = await callAI(`به عنوان کارشناس قیمت کالا در ایران، برای "${productName}" یک قیمت تقریبی به تومان پیشنهاد بده. فقط عدد را بنویس.`);
             const price = parseInt(result.replace(/,/g, '').match(/\d+/)?.[0]);
-            if (price && !isNaN(price)) {
-                document.getElementById("prodPrice").value = price;
-                document.getElementById("aiPriceSuggestion").innerHTML = `🤖 پیشنهاد AI: ${price.toLocaleString()} تومان`;
-            } else {
-                document.getElementById("aiPriceSuggestion").innerHTML = `🤖 پیشنهاد: ${result}`;
-            }
+            if (price) { document.getElementById("prodPrice").value = price; document.getElementById("aiPriceSuggestion").innerHTML = `🤖 پیشنهاد AI: ${price.toLocaleString()} تومان`; }
+            else document.getElementById("aiPriceSuggestion").innerHTML = `🤖 پاسخ: ${result}`;
         } catch(e) { document.getElementById("aiPriceSuggestion").innerHTML = `❌ خطا: ${e.message}`; }
     }
-
-    async function suggestCategory(productName) {
-        try {
-            const result = await callGemini(`دسته‌بندی مناسب برای محصول "${productName}" در انبار را فقط با یک کلمه مشخص کن. مثلاً: کنسرو، برنج، نوشیدنی، لبنیات.`);
-            document.getElementById("aiPriceSuggestion").innerHTML += `<br>🏷️ دسته پیشنهادی: ${result}`;
-        } catch(e) {}
-    }
-
     async function askAssistant(question) {
         const context = `وضعیت انبار: ${appData.products.length} محصول، موجودی کل ${appData.inventory.reduce((s,i)=>s+i.quantity,0)} واحد. سوال کاربر: ${question}`;
-        return await callGemini(`شما یک دستیار هوشمند مدیریت انبار هستید. پاسخ خود را به فارسی و مختصر بدهید. ${context}`);
+        return await callAI(`شما یک دستیار هوشمند مدیریت انبار هستید. پاسخ خود را به فارسی و مختصر بدهید. ${context}`);
     }
 
-    // ========== رندر صفحات (همانند قبل) ==========
+    // ========== رندر صفحات ==========
     function renderDashboard() {
         const totalStock = appData.inventory.reduce((s,i)=>s+i.quantity,0);
         document.getElementById("statsGrid").innerHTML = `
@@ -465,7 +412,7 @@
         html += "</tbody></table>";
         container.innerHTML = html;
     }
-    function renderCategories() { /* مشابه قبل */ 
+    function renderCategories() {
         const container = document.getElementById("categoriesList");
         const isAdmin = appData.currentUser?.role === "admin";
         if (!appData.categories.length) { container.innerHTML = "<div>دسته‌ای وجود ندارد</div>"; return; }
@@ -493,27 +440,19 @@
             appData.shops.forEach(s => {
                 const inv = appData.inventory.find(i => i.productId === p.id && i.shopId === s.id);
                 const qty = inv ? inv.quantity : 0;
-                if (isAdmin) {
-                    html += `<td><input type="number" value="${qty}" style="width:70px;" data-p="${p.id}" data-s="${s.id}" class="inv-input"></td>`;
-                } else {
-                    html += `<td>${qty}</td>`;
-                }
+                if (isAdmin) html += `<td><input type="number" value="${qty}" style="width:70px;" data-p="${p.id}" data-s="${s.id}" class="inv-input"></td>`;
+                else html += `<td>${qty}</td>`;
             });
             html += `</tr>`;
         });
         html += "</tbody></table>";
         container.innerHTML = html;
-        if (isAdmin) {
-            document.querySelectorAll(".inv-input").forEach(inp => inp.addEventListener("change", function() {
-                const productId = parseInt(this.dataset.p);
-                const shopId = parseInt(this.dataset.s);
-                let quantity = parseInt(this.value);
-                let inv = appData.inventory.find(i => i.productId === productId && i.shopId === shopId);
-                if (!inv) { inv = { productId, shopId, quantity: 0 }; appData.inventory.push(inv); }
-                inv.quantity = quantity;
-                saveData();
-            }));
-        }
+        if (isAdmin) document.querySelectorAll(".inv-input").forEach(inp => inp.addEventListener("change", function() {
+            const productId = parseInt(this.dataset.p), shopId = parseInt(this.dataset.s), quantity = parseInt(this.value);
+            let inv = appData.inventory.find(i => i.productId === productId && i.shopId === shopId);
+            if (!inv) { inv = { productId, shopId, quantity: 0 }; appData.inventory.push(inv); }
+            inv.quantity = quantity; saveData();
+        }));
     }
     function renderShops() {
         const container = document.getElementById("shopsList");
@@ -524,9 +463,9 @@
         html += "</thead><tbody>";
         appData.shops.forEach(s => {
             let social = "";
-            if (s.instagram) social += `<a href="${s.instagram}" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>`;
-            if (s.whatsapp) social += `<a href="https://wa.me/${s.whatsapp}" target="_blank" class="social-link"><i class="fab fa-whatsapp"></i></a>`;
-            if (s.telegram) social += `<a href="${s.telegram}" target="_blank" class="social-link"><i class="fab fa-telegram"></i></a>`;
+            if (s.instagram) social += `<a href="${s.instagram}" target="_blank"><i class="fab fa-instagram" style="margin-left:6px;"></i></a>`;
+            if (s.whatsapp) social += `<a href="https://wa.me/${s.whatsapp}" target="_blank"><i class="fab fa-whatsapp" style="margin-left:6px;"></i></a>`;
+            if (s.telegram) social += `<a href="${s.telegram}" target="_blank"><i class="fab fa-telegram"></i></a>`;
             html += `<tr><td>${s.name}</td><td>${s.address || "-"}</td><td>${social || "-"}</td>`;
             if (isAdmin) html += `<td><button class="btn btn-warning btn-sm" onclick="editShop(${s.id})">ویرایش</button>
                 <button class="btn btn-danger btn-sm" onclick="deleteShop(${s.id})">حذف</button></td>`;
@@ -535,27 +474,29 @@
         html += "</tbody></table>";
         container.innerHTML = html;
     }
-    function renderMessages() { /* همانند قبل */ 
+    function renderMessages() {
         const container = document.getElementById("messagesContainer");
         const isAdmin = appData.currentUser?.role === "admin";
         if (isAdmin) {
-            container.innerHTML = `<div class="form-group"><textarea id="adminMsg" rows="3" placeholder="متن پیام..."></textarea></div><button class="btn btn-primary" id="sendToAllBtn">ارسال به همه کاربران</button><h3>پیام‌های دریافتی</h3><div id="allMessages"></div>`;
-            document.getElementById("sendToAllBtn")?.addEventListener("click", () => {
+            container.innerHTML = `<div class="form-group"><textarea id="adminMsg" rows="3" placeholder="متن پیام..."></textarea></div>
+                <button class="btn btn-primary" id="sendToAllBtn">ارسال به همه کاربران</button>
+                <h3>پیام‌های دریافتی</h3><div id="allMessages"></div>`;
+            document.getElementById("sendToAllBtn").onclick = () => {
                 const text = document.getElementById("adminMsg").value;
                 if (!text) return;
                 appData.messages.push({ id: Date.now(), sender: "مدیر", target: "all", text, date: moment().format("jYYYY/jMM/jDD HH:mm") });
                 saveData(); renderMessages();
-            });
-            const msgDiv = document.getElementById("allMessages");
-            msgDiv.innerHTML = appData.messages.slice().reverse().map(m => `<div class="glass-card" style="margin-top:8px;"><strong>${m.sender}</strong> (${m.date})<br>${m.text}</div>`).join("");
+            };
+            document.getElementById("allMessages").innerHTML = appData.messages.slice().reverse().map(m => `<div class="glass-card" style="margin-top:8px;"><strong>${m.sender}</strong> (${m.date})<br>${m.text}</div>`).join("");
         } else {
-            container.innerHTML = `<div class="form-group"><textarea id="userMsg" rows="3" placeholder="پیام خود را بنویسید..."></textarea></div><button class="btn btn-primary" id="sendUserMsgBtn">ارسال به مدیر</button>`;
-            document.getElementById("sendUserMsgBtn")?.addEventListener("click", () => {
+            container.innerHTML = `<div class="form-group"><textarea id="userMsg" rows="3" placeholder="پیام خود را بنویسید..."></textarea></div>
+                <button class="btn btn-primary" id="sendUserMsgBtn">ارسال به مدیر</button>`;
+            document.getElementById("sendUserMsgBtn").onclick = () => {
                 const text = document.getElementById("userMsg").value;
                 if (!text) return;
                 appData.messages.push({ id: Date.now(), sender: appData.currentUser.username, target: "admin", text, date: moment().format("jYYYY/jMM/jDD HH:mm") });
                 saveData(); alert("پیام ارسال شد"); document.getElementById("userMsg").value = "";
-            });
+            };
         }
     }
     function renderSettings() {
@@ -599,12 +540,8 @@
         const price = parseInt(document.getElementById("prodPrice").value);
         const file = document.getElementById("prodImage").files[0];
         const saveCb = (img="") => {
-            if (currentEditing.type === "product") {
-                const p = appData.products.find(p=>p.id===currentEditing.id);
-                if(p) { p.name=name; p.unit=unit; p.price=price; if(img) p.image=img; }
-            } else {
-                appData.products.push({ id: Date.now(), name, unit, price, image: img, barcode: "" });
-            }
+            if (currentEditing.type === "product") { const p = appData.products.find(p=>p.id===currentEditing.id); if(p){ p.name=name; p.unit=unit; p.price=price; if(img) p.image=img; } }
+            else { appData.products.push({ id: Date.now(), name, unit, price, image: img }); }
             saveData(); renderProducts(); closeModal("productModal"); currentEditing={type:null,id:null};
         };
         if (file) { const reader = new FileReader(); reader.onload = (ev) => saveCb(ev.target.result); reader.readAsDataURL(file); }
@@ -624,47 +561,33 @@
         const insta = document.getElementById("shopInsta").value;
         const wa = document.getElementById("shopWhatsapp").value;
         const tel = document.getElementById("shopTelegram").value;
-        if (currentEditing.type === "shop") {
-            const s = appData.shops.find(s=>s.id===currentEditing.id);
-            if(s) { s.name=name; s.address=address; s.instagram=insta; s.whatsapp=wa; s.telegram=tel; }
-        } else { appData.shops.push({ id: Date.now(), name, address, instagram:insta, whatsapp:wa, telegram:tel }); }
+        if (currentEditing.type === "shop") { const s = appData.shops.find(s=>s.id===currentEditing.id); if(s){ s.name=name; s.address=address; s.instagram=insta; s.whatsapp=wa; s.telegram=tel; } }
+        else { appData.shops.push({ id: Date.now(), name, address, instagram:insta, whatsapp:wa, telegram:tel }); }
         saveData(); renderShops(); closeModal("shopModal"); currentEditing={type:null,id:null};
     });
 
-    // هوش مصنوعی در محصول
-    document.getElementById("aiSuggestPriceBtn")?.addEventListener("click", () => {
-        const productName = document.getElementById("prodName").value;
-        if (!productName) { alert("ابتدا نام محصول را وارد کنید"); return; }
-        suggestPrice(productName);
-    });
-
-    // دستیار در داشبورد
+    // هوش مصنوعی
+    document.getElementById("aiSuggestPriceBtn")?.addEventListener("click", () => { const name = document.getElementById("prodName").value; if(name) suggestPrice(name); else alert("ابتدا نام محصول را وارد کنید"); });
     document.getElementById("askAiBtn")?.addEventListener("click", async () => {
-        const question = document.getElementById("aiQuestion").value;
-        if (!question) return;
-        document.getElementById("aiAnswer").innerHTML = "در حال دریافت پاسخ هوشمند...";
-        try {
-            const answer = await askAssistant(question);
-            document.getElementById("aiAnswer").innerHTML = answer;
-        } catch(e) { document.getElementById("aiAnswer").innerHTML = `❌ خطا: ${e.message}`; }
+        const q = document.getElementById("aiQuestion").value;
+        if (!q) return;
+        document.getElementById("aiAnswer").innerHTML = "در حال دریافت پاسخ...";
+        try { document.getElementById("aiAnswer").innerHTML = await askAssistant(q); }
+        catch(e) { document.getElementById("aiAnswer").innerHTML = `❌ خطا: ${e.message}`; }
     });
 
     // بارکدخوان
     function startScanner() {
         const scannerDiv = document.getElementById("barcodeScanner");
         scannerDiv.classList.add("active");
-        Quagga.init({
-            inputStream: { name: "Live", type: "LiveStream", target: document.querySelector("#scannerView") },
-            decoder: { readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader"] }
-        }, (err) => {
+        Quagga.init({ inputStream: { name: "Live", type: "LiveStream", target: document.querySelector("#scannerView") }, decoder: { readers: ["code_128_reader","ean_reader","ean_8_reader","upc_reader"] } }, (err) => {
             if (err) { alert("دوربین در دسترس نیست"); scannerDiv.classList.remove("active"); return; }
             Quagga.start();
         });
         Quagga.onDetected((data) => {
             const code = data.codeResult.code;
             document.getElementById("prodName").value = code;
-            Quagga.stop();
-            scannerDiv.classList.remove("active");
+            Quagga.stop(); scannerDiv.classList.remove("active");
             openModal("productModal");
         });
     }
@@ -686,12 +609,9 @@
     function bindEvents() {
         document.getElementById("loginForm").addEventListener("submit", (e) => {
             e.preventDefault();
-            const user = document.getElementById("loginUsername").value;
-            const pass = document.getElementById("loginPassword").value;
-            if (user === "admin" && pass === appData.settings.adminPassword) {
-                appData.currentUser = { username: "admin", role: "admin" };
-                afterLogin();
-            } else {
+            const user = document.getElementById("loginUsername").value, pass = document.getElementById("loginPassword").value;
+            if (user === "admin" && pass === appData.settings.adminPassword) { appData.currentUser = { username: "admin", role: "admin" }; afterLogin(); }
+            else {
                 const found = appData.users.find(u=>u.username===user && u.password===pass);
                 if (found) { appData.currentUser = found; afterLogin(); }
                 else { document.getElementById("loginError").classList.remove("hidden"); }
@@ -700,10 +620,10 @@
         document.getElementById("logoutBtn").addEventListener("click", () => { appData.currentUser = null; document.getElementById("appContainer").classList.add("hidden"); document.getElementById("loginPage").classList.remove("hidden"); });
         document.getElementById("menuToggle").addEventListener("click", () => { document.getElementById("sidebar").classList.toggle("open"); document.getElementById("overlay").classList.toggle("show"); });
         document.getElementById("overlay").addEventListener("click", () => { document.getElementById("sidebar").classList.remove("open"); document.getElementById("overlay").classList.remove("show"); });
-        document.querySelectorAll(".sidebar a[data-page]").forEach(a => a.addEventListener("click", (e) => { e.preventDefault(); showPage(a.dataset.page); document.getElementById("sidebar").classList.remove("open"); document.getElementById("overlay").classList.remove("show"); }));
-        document.getElementById("addProductBtn").addEventListener("click", () => { if(appData.currentUser?.role!=="admin"){alert("دسترسی محدود");return;} currentEditing={type:null,id:null}; document.getElementById("productModalTitle").innerText="محصول جدید"; document.getElementById("prodName").value=""; document.getElementById("prodUnit").value=""; document.getElementById("prodPrice").value=""; document.getElementById("prodImage").value=""; document.getElementById("aiPriceSuggestion").innerHTML=""; openModal("productModal"); });
-        document.getElementById("addCategoryBtn").addEventListener("click", () => { if(appData.currentUser?.role!=="admin"){alert("دسترسی محدود");return;} currentEditing={type:null,id:null}; document.getElementById("catName").value=""; openModal("categoryModal"); });
-        document.getElementById("addShopBtn").addEventListener("click", () => { if(appData.currentUser?.role!=="admin"){alert("دسترسی محدود");return;} currentEditing={type:null,id:null}; document.getElementById("shopName").value=""; document.getElementById("shopAddress").value=""; document.getElementById("shopInsta").value=""; document.getElementById("shopWhatsapp").value=""; document.getElementById("shopTelegram").value=""; openModal("shopModal"); });
+        document.querySelectorAll(".sidebar a[data-page]").forEach(a => a.addEventListener("click", (e) => { e.preventDefault(); showPage(a.dataset.page); closeMenu(); }));
+        document.getElementById("addProductBtn").addEventListener("click", () => { if(appData.currentUser?.role!=="admin"){ alert("دسترسی محدود"); return; } currentEditing={type:null,id:null}; document.getElementById("productModalTitle").innerText="محصول جدید"; document.getElementById("prodName").value=""; document.getElementById("prodUnit").value=""; document.getElementById("prodPrice").value=""; document.getElementById("prodImage").value=""; document.getElementById("aiPriceSuggestion").innerHTML=""; openModal("productModal"); });
+        document.getElementById("addCategoryBtn").addEventListener("click", () => { if(appData.currentUser?.role!=="admin"){ alert("دسترسی محدود"); return; } currentEditing={type:null,id:null}; document.getElementById("catName").value=""; openModal("categoryModal"); });
+        document.getElementById("addShopBtn").addEventListener("click", () => { if(appData.currentUser?.role!=="admin"){ alert("دسترسی محدود"); return; } currentEditing={type:null,id:null}; document.getElementById("shopName").value=""; document.getElementById("shopAddress").value=""; document.getElementById("shopInsta").value=""; document.getElementById("shopWhatsapp").value=""; document.getElementById("shopTelegram").value=""; openModal("shopModal"); });
         document.getElementById("exportJsonBtn").addEventListener("click", () => { const data = JSON.stringify(appData); const blob = new Blob([data],{type:"application/json"}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download=`backup_${Date.now()}.json`; a.click(); URL.revokeObjectURL(url); });
         document.getElementById("importJsonBtn").addEventListener("click", () => { const inp=document.createElement("input"); inp.type="file"; inp.accept="application/json"; inp.onchange=(e)=>{ const file=e.target.files[0]; const reader=new FileReader(); reader.onload=(ev)=>{ try{ const data=JSON.parse(ev.target.result); Object.assign(appData,data); saveData(); location.reload(); }catch(ex){ alert("فایل نامعتبر"); } }; reader.readAsText(file); }; inp.click(); });
         document.getElementById("pdfReportBtn").addEventListener("click", async () => { const {jsPDF}=window.jspdf; const doc=new jsPDF(); doc.text("گزارش انبار",105,20,{align:"center"}); doc.text(`تاریخ: ${moment().format("jYYYY/jMM/jDD")}`,105,30,{align:"center"}); let y=50; doc.text(`کل محصولات: ${appData.products.length}`,20,y); y+=10; doc.text(`کل فروشگاه‌ها: ${appData.shops.length}`,20,y); y+=10; doc.text(`کل موجودی: ${appData.inventory.reduce((s,i)=>s+i.quantity,0)}`,20,y); doc.save(`report_${Date.now()}.pdf`); });
@@ -713,12 +633,13 @@
         document.getElementById("fullResetBtn").addEventListener("click", () => { if(confirm("بازنشانی کامل سیستم")) { localStorage.clear(); location.reload(); } });
         document.getElementById("changePassBtn").addEventListener("click", () => { const newPass=document.getElementById("newAdminPass").value; if(newPass){ appData.settings.adminPassword=newPass; saveData(); alert("رمز مدیر تغییر کرد"); } });
         document.getElementById("saveLogoBtn").addEventListener("click", () => { const file=document.getElementById("logoUpload").files[0]; if(file){ const reader=new FileReader(); reader.onload=(ev)=>{ appData.settings.logo=ev.target.result; saveData(); applySettings(); }; reader.readAsDataURL(file); } });
-        document.getElementById("saveApiKeyBtn").addEventListener("click", () => { const key = document.getElementById("geminiApiKey").value; appData.settings.geminiApiKey = key; saveData(); alert("کلید API ذخیره شد"); });
+        document.getElementById("saveAiSettingsBtn").addEventListener("click", () => { appData.settings.aiApiKey = document.getElementById("aiApiKey").value; appData.settings.aiApiUrl = document.getElementById("aiApiUrl").value; saveData(); alert("تنظیمات AI ذخیره شد"); });
         document.getElementById("langSelect").addEventListener("change", (e) => { appData.settings.language=e.target.value; saveData(); location.reload(); });
         document.getElementById("fontSelect").addEventListener("change", (e) => { appData.settings.font=e.target.value; saveData(); applySettings(); });
         document.getElementById("addMarqueeMsgBtn").addEventListener("click", () => { const msg=document.getElementById("newMarqueeMsg").value; if(msg){ appData.settings.marqueeMessages.push(msg); saveData(); renderSettings(); updateMarquee(); document.getElementById("newMarqueeMsg").value=""; } });
         document.getElementById("addUserBtn").addEventListener("click", () => { const u=prompt("نام کاربری:"); const p=prompt("رمز عبور:"); if(u&&p){ appData.users.push({ id: Date.now(), username: u, password: p, role: "user" }); saveData(); renderSettings(); } });
     }
+    function closeMenu() { document.getElementById("sidebar").classList.remove("open"); document.getElementById("overlay").classList.remove("show"); }
     function afterLogin() {
         document.getElementById("loginPage").classList.add("hidden");
         document.getElementById("appContainer").classList.remove("hidden");
@@ -726,9 +647,8 @@
         const isAdmin = appData.currentUser?.role === "admin";
         document.querySelectorAll(".sidebar a[data-page]").forEach(link => {
             const page = link.dataset.page;
-            if (page === "shops" || page === "settings" || page === "categories") {
-                link.parentElement.style.display = isAdmin ? "block" : "none";
-            } else { link.parentElement.style.display = "block"; }
+            if (page === "shops" || page === "settings" || page === "categories") link.parentElement.style.display = isAdmin ? "block" : "none";
+            else link.parentElement.style.display = "block";
         });
         showPage("dashboard");
         saveData();
