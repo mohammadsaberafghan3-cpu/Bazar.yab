@@ -68,6 +68,7 @@ for each row execute procedure public.handle_new_user();
 
 -- Orders and their item snapshots must be created atomically on the server.
 -- Client-supplied prices are deliberately ignored.
+drop policy if exists orders_create on public.orders;
 drop policy if exists items_create on public.order_items;
 create or replace function public.place_order(p_items jsonb,p_address jsonb,p_shipping numeric default 0)
 returns uuid
