@@ -127,3 +127,52 @@ grant execute on function public.place_order(jsonb,jsonb,numeric) to authenticat
 
 -- Profile role is intentionally not writable by the client. Set seller/admin roles
 -- only from a trusted administrative process after identity and application review.
+
+-- Admin-only seller approval provisions the store and grants the seller role.
+create or replace function public.approve_seller_application(p_application_id uuid,p_store_slug text)
+returns uuid
+language plpgsql security definer set search_path=public,pg_temp
+as $$
+declare
+  v_app public.seller_applications%rowtype;
+  v_store uuid;
+begin
+  if not public.is_admin() then raise exception 'Administrator permission required'; end if;
+  select * into v_app from public.seller_applications where id=p_application_id for update;
+  if not found or v_app.status <> 'pending' then raise exception 'Application is not pending'; end if;
+  if length(trim(p_store_slug)) < 3 then raise exception 'Store slug is too short'; end if;
+  insert into public.stores(owner_id,name,slug,description,province,is_active)
+  values(v_app.user_id,v_app.store_name,lower(trim(p_store_slug)),v_app.description,v_app.province,true)
+  returning id into v_store;
+  update public.profiles set role='seller',updated_at=now() where id=v_app.user_id;
+  update public.seller_applications set status='approved',reviewed_by=auth.uid(),reviewed_at=now() where id=p_application_id;
+  insert into public.audit_logs(actor_id,action,entity_type,entity_id,details)
+  values(auth.uid(),'seller_approved','seller_application',p_application_id,jsonb_build_object('store_id',v_store));
+  return v_store;
+end;
+$$;
+revoke all on function public.approve_seller_application(uuid,text) from public;
+grant execute on function public.approve_seller_application(uuid,text) to authenticated;
+
+-- Seller order inbox exposes only orders containing at least one item from their own store.
+create or replace function public.get_my_seller_orders()
+returns table(order_id uuid,order_number bigint,order_status public.order_state,created_at timestamptz,address_snapshot jsonb,items jsonb)
+language plpgsql stable security definer set search_path=public,pg_temp
+as $$
+begin
+  if auth.uid() is null or public.current_app_role() not in ('seller','admin') then
+    raise exception 'Seller permission required';
+  end if;
+  return query
+  select o.id,o.order_number,o.status,o.created_at,o.address_snapshot,
+         jsonb_agg(jsonb_build_object('name',i.product_name,'quantity',i.quantity,'unit_price_afn',i.unit_price_afn,'line_total_afn',i.line_total_afn))
+  from public.orders o
+  join public.order_items i on i.order_id=o.id
+  join public.stores st on st.id=i.store_id
+  where st.owner_id=auth.uid() or public.is_admin()
+  group by o.id
+  order by o.created_at desc;
+end;
+$$;
+revoke all on function public.get_my_seller_orders() from public;
+grant execute on function public.get_my_seller_orders() to authenticated;
