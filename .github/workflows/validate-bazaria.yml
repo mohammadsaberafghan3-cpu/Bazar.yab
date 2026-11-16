@@ -1,0 +1,24 @@
+name: Validate BAZARIA
+on:
+  push:
+    branches: [feature/bazaria-complete-mvp]
+    paths: ['bazaria/**', '.github/workflows/validate-bazaria.yml']
+  pull_request:
+    paths: ['bazaria/**', '.github/workflows/validate-bazaria.yml']
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check JavaScript syntax
+        run: node --check bazaria/app.js
+      - name: Check required app files
+        run: |
+          test -s bazaria/index.html
+          test -s bazaria/styles.css
+          test -s bazaria/manifest.webmanifest
+          test -s bazaria/sw.js
+          test -s bazaria/supabase/schema.sql
