@@ -50,3 +50,79 @@ create policy audit_read on public.audit_logs for select to authenticated using(
 create policy audit_insert on public.audit_logs for insert to authenticated with check(public.is_admin());
 -- Provision the first admin only via trusted SQL after verifying the auth.users UUID.
 -- Never let browser clients self-assign privileged roles; never expose service_role keys.
+
+-- Create a customer profile automatically for new Auth users.
+create or replace function public.handle_new_user()
+returns trigger language plpgsql security definer set search_path=public
+as $$
+begin
+  insert into public.profiles(id,full_name,phone,role)
+  values(new.id,coalesce(new.raw_user_meta_data->>'full_name',''),new.phone,'customer')
+  on conflict(id) do nothing;
+  return new;
+end;
+$$;
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created after insert on auth.users
+for each row execute procedure public.handle_new_user();
+
+-- Orders and their item snapshots must be created atomically on the server.
+-- Client-supplied prices are deliberately ignored.
+drop policy if exists items_create on public.order_items;
+create or replace function public.place_order(p_items jsonb,p_address jsonb,p_shipping numeric default 0)
+returns uuid
+language plpgsql
+security definer
+set search_path=public,pg_temp
+as $$
+declare
+  v_order uuid;
+  v_item record;
+  v_product public.products%rowtype;
+  v_subtotal numeric(14,2):=0;
+  v_total numeric(14,2);
+begin
+  if auth.uid() is null then raise exception 'Authentication required'; end if;
+  if jsonb_typeof(p_items) <> 'array' or jsonb_array_length(p_items)=0 then raise exception 'Cart is empty'; end if;
+  if p_address is null or jsonb_typeof(p_address) <> 'object' then raise exception 'A delivery address is required'; end if;
+  if p_shipping < 0 then raise exception 'Invalid shipping fee'; end if;
+  for v_item in
+    select (value->>'product_id')::uuid as product_id,
+           sum((value->>'quantity')::integer)::integer as quantity
+    from jsonb_array_elements(p_items)
+    group by (value->>'product_id')::uuid
+  loop
+    if v_item.quantity is null or v_item.quantity < 1 then raise exception 'Invalid quantity'; end if;
+    select p.* into v_product
+    from public.products p join public.stores s on s.id=p.store_id
+    where p.id=v_item.product_id and p.status='active' and s.is_active=true
+    for update of p;
+    if not found then raise exception 'Product unavailable: %',v_item.product_id; end if;
+    if v_product.stock < v_item.quantity then raise exception 'Insufficient stock for %',v_product.name; end if;
+    v_subtotal:=v_subtotal+(v_product.price_afn*v_item.quantity);
+  end loop;
+  v_total:=v_subtotal+p_shipping;
+  insert into public.orders(customer_id,address_snapshot,subtotal_afn,shipping_afn,total_afn,payment_method,payment_status,status)
+  values(auth.uid(),p_address,v_subtotal,p_shipping,v_total,'cod','unpaid','pending')
+  returning id into v_order;
+  for v_item in
+    select (value->>'product_id')::uuid as product_id,
+           sum((value->>'quantity')::integer)::integer as quantity
+    from jsonb_array_elements(p_items)
+    group by (value->>'product_id')::uuid
+  loop
+    select p.* into v_product from public.products p where p.id=v_item.product_id for update;
+    insert into public.order_items(order_id,product_id,store_id,product_name,sku,quantity,unit_price_afn,line_total_afn)
+    values(v_order,v_product.id,v_product.store_id,v_product.name,v_product.sku,v_item.quantity,v_product.price_afn,v_product.price_afn*v_item.quantity);
+    update public.products set stock=stock-v_item.quantity,updated_at=now() where id=v_product.id;
+  end loop;
+  insert into public.order_status_history(order_id,changed_by,new_status,note)
+  values(v_order,auth.uid(),'pending','Order created with cash on delivery');
+  return v_order;
+end;
+$$;
+revoke all on function public.place_order(jsonb,jsonb,numeric) from public;
+grant execute on function public.place_order(jsonb,jsonb,numeric) to authenticated;
+
+-- Profile role is intentionally not writable by the client. Set seller/admin roles
+-- only from a trusted administrative process after identity and application review.
